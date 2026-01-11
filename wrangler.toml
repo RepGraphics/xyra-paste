@@ -1,0 +1,6 @@
+name = "xyra-paste"
+compatibility_date = "2025-01-11"
+
+[[kv_namespaces]]
+binding = "PASTES"
+id = "YOUR_KV_NAMESPACE_ID_HERE"
