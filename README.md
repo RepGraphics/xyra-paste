@@ -61,46 +61,57 @@ npm run build
 
 ## Deployment to Cloudflare Pages
 
-### Prerequisites
+### Method 1: Direct Upload via Wrangler (Recommended)
 
-1. A Cloudflare account
-2. Wrangler CLI installed (`npm install -g wrangler`)
+This is the most reliable method for Nitro apps:
 
-### Setup
+```bash
+# Install dependencies
+npm install
 
-1. **Create a KV namespace:**
-   ```bash
-   wrangler kv:namespace create "PASTES"
-   ```
-   
-   Note the ID returned by this command.
+# Build the project
+npm run build
 
-2. **Deploy to Cloudflare Pages:**
-   
-   Using Wrangler CLI:
-   ```bash
-   npm run build
-   wrangler pages deploy .output/public
-   ```
-   
-   Or connect your GitHub repository to Cloudflare Pages Dashboard:
+# Deploy to Cloudflare Pages (creates project if it doesn't exist)
+npx wrangler pages deploy dist --project-name=xyra-paste
+
+# Or if project already exists, just:
+npx wrangler pages deploy dist
+```
+
+After deployment:
+1. Go to Cloudflare Dashboard → Workers & Pages → your project
+2. Click "Settings" → "Functions"
+3. Under "KV namespace bindings", click "Add binding":
+   - Variable name: `PASTES`
+   - KV namespace: Create or select your PASTES namespace
+4. Save and the site will automatically redeploy
+
+### Method 2: Git Integration (Alternative)
+
+If you prefer Git-based deployments:
+
+1. **Push your code to GitHub**
+
+2. **Create KV namespace:**
+   - Go to Cloudflare Dashboard → Workers & Pages → KV
+   - Click "Create a namespace" and name it `PASTES`
+
+3. **Connect to Cloudflare Pages:**
    - Go to Cloudflare Pages Dashboard
-   - Click "Create a project"
-   - Connect your Git repository
-   - Set build command: `npm run build`
-   - Set build output directory: `.output/public`
-
-3. **Configure KV binding:**
+   - Click "Create a project" → "Connect to Git"
+   - Select your repository
    
-   In your Cloudflare Pages project settings:
-   - Go to Settings → Functions → KV namespace bindings
-   - Add a binding:
-     - Variable name: `PASTES`
-     - KV namespace: Select the namespace you created
+4. **Configure build settings:**
+   - Framework preset: `None`
+   - Build command: `npm run build`
+   - Deploy command: `npx wrangler pages deploy dist`
+   - Root directory (Path): `/`
 
-4. **Set compatibility date:**
-   
-   Create a `wrangler.toml` file if deploying via CLI, or set in Pages settings.
+5. **Add KV binding:**
+   - After first deployment, go to Settings → Functions
+   - Add KV namespace binding: Variable name `PASTES`
+   - Save and redeploy
 
 ## Environment Variables
 
